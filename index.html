@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Risk Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            text-align: center;
+            font-size: 1.2em;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Stock Risk Calculator</h1>
+    <form id="stockForm">
+        <label for="stockSymbol">Stock Symbol:</label>
+        <input type="text" id="stockSymbol" name="stockSymbol" placeholder="e.g., AAPL, TSLA" required>
+
+        <label for="investment">Investment Amount:</label>
+        <input type="number" id="investment" name="investment" placeholder="Enter your investment amount" required>
+
+        <label for="confidence">Confidence Level (%):</label>
+        <select id="confidence" name="confidence" required>
+            <option value="95">95%</option>
+            <option value="99">99%</option>
+        </select>
+
+        <label for="days">Time Horizon (Days):</label>
+        <input type="number" id="days" name="days" placeholder="e.g., 30" required>
+
+        <button type="submit">Calculate Risk</button>
+    </form>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    document.getElementById('stockForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const stockSymbol = document.getElementById('stockSymbol').value;
+        const investment = document.getElementById('investment').value;
+        const confidence = document.getElementById('confidence').value;
+        const days = document.getElementById('days').value;
+
+        const response = await fetch('/calculate-risk', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                stockSymbol,
+                investment,
+                confidence,
+                days
+            })
+        });
+
+        const data = await response.json();
+        document.getElementById('result').innerHTML = `Value-at-Risk (VaR): ${data.var}`;
+    });
+</script>
+
+</body>
+</html>
